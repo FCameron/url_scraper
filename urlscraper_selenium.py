@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 import csv
 import time
+import random
 
 tickers = []
 
@@ -21,7 +22,7 @@ f.close()
 
 quick_comps_list = []
 
-PATH = "/Users/fcg/Library/chromedriver"
+PATH = "path_to_chromedriver_here"
 driver = webdriver.Chrome(PATH)
 
 username = ""
@@ -29,13 +30,17 @@ password = ""
 
 wait = WebDriverWait(driver, 15)
 driver.get("https://www.capitaliq.com")
+quick_comps = wait.until(presence_of_element_located((By.ID, "onetrust-accept-btn-handler")))
+driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
 driver.find_element(By.ID, "username").send_keys(username)
 driver.find_element(By.ID, "password").send_keys(password + Keys.RETURN)
 search_tab = wait.until(presence_of_element_located((By.ID, "SearchTopBar")))
 for ticker in tickers:
-	time.sleep(20)
+	time.sleep(random.randint(5,10))
 	try:
-		driver.find_element(By.ID, "SearchTopBar").send_keys(ticker + Keys.RETURN)
+		driver.find_element(By.ID, "SearchTopBar").send_keys(":" + ticker)
+		time.sleep(random.randint(2,7))
+		driver.find_element(By.ID, "SearchTopBar").send_keys( Keys.ARROW_DOWN + Keys.RETURN)
 		quick_comps = wait.until(presence_of_element_located((By.ID, "ll_7_26_2305")))
 		link = driver.find_element(By.LINK_TEXT, "Quick Comps")
 		link.click()
